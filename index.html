@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Drape — Try on tomorrow's outfit, today</title>
+<meta name="description" content="Drape is an AI virtual try-on and personal-styling app for premium fashion. Build your wardrobe, see clothes on your own body, and get outfit recommendations from your AI stylist." />
+<style>
+  :root{
+    --cream:#FBF6EF; --cream-2:#F3EADF; --ink:#2A2622;
+    --terra:#BE5B36; --terra-d:#A24A2A; --muted:#6F665C; --line:#E6DACB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:"Hoefler Text",Georgia,"Times New Roman",serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  header{padding:28px 0}
+  .brand{font-size:30px;font-weight:600;color:var(--terra);letter-spacing:.5px}
+  .hero{padding:64px 0 40px;text-align:center}
+  .hero h1{font-size:clamp(38px,7vw,68px);font-weight:600;line-height:1.05;letter-spacing:-.5px;max-width:14ch;margin:0 auto 20px}
+  .hero p.lede{font-size:clamp(17px,2.6vw,21px);color:var(--muted);max-width:54ch;margin:0 auto 28px}
+  .pill{display:inline-block;background:var(--cream-2);border:1px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:8px 16px;font-size:13px;letter-spacing:.6px;text-transform:uppercase;margin-bottom:28px}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--terra);color:#fff;text-decoration:none;
+    border-radius:999px;padding:15px 30px;font-size:16px;font-weight:600;transition:background .15s}
+  .cta:hover{background:var(--terra-d)}
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:56px 0}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px}
+  .card h3{font-size:19px;margin-bottom:8px}
+  .card p{font-size:15px;color:var(--muted)}
+  .ico{width:44px;height:44px;border-radius:12px;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+  .band{background:var(--cream-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;padding:56px 24px;margin-top:24px}
+  .band h2{font-size:clamp(26px,4vw,38px);font-weight:600;margin-bottom:12px;max-width:20ch;margin-left:auto;margin-right:auto}
+  .band p{color:var(--muted);max-width:50ch;margin:0 auto 24px}
+  footer{padding:40px 0 56px;text-align:center;color:var(--muted);font-size:14px}
+  footer a{color:var(--terra);text-decoration:none}
+  @media(max-width:720px){.features{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <header><div class="wrap"><div class="brand serif">Drape</div></div></header>
+
+  <section class="hero"><div class="wrap">
+    <span class="pill">In private beta · iOS</span>
+    <h1 class="serif">Try on tomorrow's outfit, today.</h1>
+    <p class="lede">Drape is an AI virtual try-on and personal-styling app for premium fashion. Build your wardrobe, see clothes rendered on your own body, and let your AI stylist compose the look.</p>
+    <a class="cta" href="#waitlist">Coming soon to the App Store →</a>
+  </div></section>
+
+  <section class="wrap"><div class="features">
+    <div class="card">
+      <div class="ico">🧥</div>
+      <h3>Virtual try-on</h3>
+      <p>See real garments rendered on a photoreal model of you — not a generic mannequin — front and back.</p>
+    </div>
+    <div class="card">
+      <div class="ico">✨</div>
+      <h3>Your AI stylist</h3>
+      <p>Sandra composes outfits from your wardrobe, matched to the occasion, weather and your own colours.</p>
+    </div>
+    <div class="card">
+      <div class="ico">👗</div>
+      <h3>Shop the look</h3>
+      <p>Discover and try on pieces from leading fashion retailers, then buy the ones that suit you.</p>
+    </div>
+  </div></section>
+
+  <section class="band" id="waitlist">
+    <h2 class="serif">Premium fashion, styled for you.</h2>
+    <p>Drape is launching in 2026. We're inviting early testers now.</p>
+    <a class="cta" href="mailto:info@auszglobal.com.au?subject=Drape%20early%20access">Request early access</a>
+  </section>
+
+  <footer><div class="wrap">
+    Drape is built by <strong>AUSZ Global Pty Ltd</strong>, Australia.<br/>
+    <a href="mailto:info@auszglobal.com.au">info@auszglobal.com.au</a>
+  </div></footer>
+</body>
+</html>
