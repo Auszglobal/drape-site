@@ -170,7 +170,7 @@
     text-transform:uppercase;padding:3px 7px;border-radius:999px;align-self:center}
   .band .badge{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14)}
 
-  /* ===== 360° model turntable ===== */
+  /* ===== Virtual try-on cycle (front + 45° across outfits) ===== */
   .turntable{position:relative;height:440px;aspect-ratio:560/1003;max-width:100%;border-radius:18px;overflow:hidden;
     background:#ece0ce;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;
     box-shadow:0 26px 52px -30px rgba(42,38,34,.55)}
@@ -185,6 +185,10 @@
     font-size:11.5px;font-weight:600;letter-spacing:.3px;padding:6px 13px;border-radius:999px;
     -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);pointer-events:none;transition:opacity .45s}
   .tt-hint.hide{opacity:0}
+  .tt-look{position:absolute;left:50%;bottom:13px;transform:translateX(-50%);z-index:2;white-space:nowrap;
+    display:inline-flex;align-items:center;background:rgba(42,38,34,.62);color:#F4ECE2;font-size:12px;font-weight:600;
+    letter-spacing:.3px;padding:6px 14px;border-radius:999px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    pointer-events:none;transition:opacity .25s}
   .fmedia .turntable{margin:-6px 0}
   @media(max-width:760px){.turntable{height:400px}}
 
@@ -316,17 +320,15 @@
         </ul>
       </div>
       <div class="fmedia">
-        <div class="turntable" id="turntable" role="img" aria-label="A photoreal body model rotating through a full 360 degrees">
-          <span class="tt-badge">360°</span>
-          <img src="assets/turntable/frame0.webp" class="on" decoding="async" alt="Photoreal body model, front view" />
-          <img src="assets/turntable/frame1.webp" decoding="async" alt="" />
-          <img src="assets/turntable/frame2.webp" decoding="async" alt="" />
-          <img src="assets/turntable/frame3.webp" decoding="async" alt="" />
-          <img src="assets/turntable/frame4.webp" decoding="async" alt="" />
-          <img src="assets/turntable/frame5.webp" decoding="async" alt="" />
-          <img src="assets/turntable/frame6.webp" decoding="async" alt="" />
-          <img src="assets/turntable/frame7.webp" decoding="async" alt="" />
-          <span class="tt-hint" id="ttHint">⟲ Drag to spin</span>
+        <div class="turntable" id="turntable" role="img" aria-label="A photoreal model trying on different outfits, shown from the front and a 45-degree angle">
+          <span class="tt-badge">Virtual try-on</span>
+          <img src="assets/tryon/look0.webp" class="on" data-look="Tailored blazer" decoding="async" alt="Model wearing a tailored blazer, front view" />
+          <img src="assets/tryon/look1.webp" data-look="Tailored blazer" decoding="async" alt="" />
+          <img src="assets/tryon/look2.webp" data-look="Wrap dress" decoding="async" alt="" />
+          <img src="assets/tryon/look3.webp" data-look="Wrap dress" decoding="async" alt="" />
+          <img src="assets/tryon/look4.webp" data-look="Wool coat" decoding="async" alt="" />
+          <img src="assets/tryon/look5.webp" data-look="Wool coat" decoding="async" alt="" />
+          <span class="tt-look" id="ttLook">Tailored blazer</span>
         </div>
       </div>
     </div>
@@ -536,26 +538,26 @@
     hero.addEventListener('mouseleave', function(){ phone.style.transform = ''; });
   }
 
-  /* 360° turntable — auto-rotate while on screen, drag / swipe to spin */
+  /* Virtual try-on cycle — front + 45° across outfits; auto-plays on screen, drag to change */
   var tt = document.getElementById('turntable');
   if(tt){
     var frames = tt.querySelectorAll('img'), n = frames.length, cur = 0;
-    function show(i){ i=((i%n)+n)%n; if(i===cur) return; frames[cur].classList.remove('on'); frames[i].classList.add('on'); cur=i; }
-    var hint = document.getElementById('ttHint');
-    var dragging=false, startX=0, startFrame=0, moved=false, auto=null, inView=false;
-    var SENS = 26; /* px of drag per frame */
-    function startAuto(){ if(rm||auto||dragging||!inView) return; auto=setInterval(function(){ show(cur+1); }, 170); }
+    var look = document.getElementById('ttLook');
+    function show(i){ i=((i%n)+n)%n; if(i===cur) return; frames[cur].classList.remove('on'); frames[i].classList.add('on'); cur=i;
+      if(look){ look.textContent = frames[i].getAttribute('data-look') || ''; } }
+    var dragging=false, startX=0, startFrame=0, auto=null, inView=false;
+    var SENS = 34; /* px of drag per frame */
+    function startAuto(){ if(rm||auto||dragging||!inView) return; auto=setInterval(function(){ show(cur+1); }, 1100); }
     function stopAuto(){ if(auto){ clearInterval(auto); auto=null; } }
     if('IntersectionObserver' in window){
       new IntersectionObserver(function(es){ es.forEach(function(e){ inView=e.isIntersecting; if(inView){ startAuto(); } else { stopAuto(); } }); }, {threshold:.35}).observe(tt);
     } else { inView=true; startAuto(); }
-    function down(x){ dragging=true; moved=false; startX=x; startFrame=cur; stopAuto(); tt.classList.add('drag'); }
-    function move(x){ if(!dragging) return; var d=x-startX; if(Math.abs(d)>4){ moved=true; if(hint){ hint.classList.add('hide'); } } show(startFrame - Math.round(d/SENS)); }
+    function down(x){ dragging=true; startX=x; startFrame=cur; stopAuto(); tt.classList.add('drag'); }
+    function move(x){ if(!dragging) return; show(startFrame - Math.round((x-startX)/SENS)); }
     function up(){ if(!dragging) return; dragging=false; tt.classList.remove('drag'); startAuto(); }
     tt.addEventListener('pointerdown', function(e){ down(e.clientX); });
     window.addEventListener('pointermove', function(e){ move(e.clientX); });
     window.addEventListener('pointerup', up);
-    if(!rm){ setTimeout(function(){ if(hint && !moved){ hint.classList.add('hide'); } }, 4800); }
   }
 
   /* Sandra — cycle expressions so she feels alive */
