@@ -153,6 +153,7 @@
     .reveal{opacity:1 !important;transform:none !important;transition:none}
     .phone-float{animation:none}
     .phone{transition:none}
+    .sandra,.fmedia .glyph,.sandra .tag .dot{animation:none}
     html{scroll-behavior:auto}
   }
 
@@ -186,6 +187,26 @@
   .tt-hint.hide{opacity:0}
   .fmedia .turntable{margin:-6px 0}
   @media(max-width:760px){.turntable{height:400px}}
+
+  /* ===== Animated Sandra ===== */
+  .sandra{position:relative;width:320px;max-width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;
+    background:radial-gradient(125% 120% at 50% 18%, #fff 0%, var(--cream-2) 72%);
+    box-shadow:0 26px 52px -30px rgba(42,38,34,.5);animation:floaty 6s ease-in-out infinite}
+  .sandra img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .9s ease;-webkit-user-drag:none}
+  .sandra img.on{opacity:1}
+  .sandra .tag{position:absolute;left:14px;bottom:14px;z-index:2;display:inline-flex;align-items:center;gap:8px;
+    background:rgba(42,38,34,.6);color:#F4ECE2;font-size:12px;font-weight:600;letter-spacing:.2px;padding:6px 13px;
+    border-radius:999px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .sandra .tag .dot{width:8px;height:8px;border-radius:50%;background:#46d39a;animation:pulse 2.1s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(70,211,154,.55)}70%{box-shadow:0 0 0 9px rgba(70,211,154,0)}100%{box-shadow:0 0 0 0 rgba(70,211,154,0)}}
+
+  /* ===== Extra motion ===== */
+  .fmedia .glyph{animation:floaty 5.6s ease-in-out infinite}
+  .feature.rev .fmedia .glyph{animation-duration:6.4s}
+  .step,.diff,.plan{transition:transform .28s cubic-bezier(.2,.7,.2,1),box-shadow .28s}
+  .step:hover,.diff:hover,.plan:hover{transform:translateY(-5px);box-shadow:0 22px 40px -26px rgba(42,38,34,.5)}
+  .cta{transition:transform .2s ease,box-shadow .25s ease,background .2s ease}
+  .cta:not(.ghost):hover{transform:translateY(-2px);box-shadow:0 16px 30px -16px rgba(190,91,54,.65)}
 </style>
 </head>
 <body>
@@ -296,7 +317,14 @@
           <li>Completes the gap with items you can try on and buy</li>
         </ul>
       </div>
-      <div class="fmedia"><div class="glyph">✨</div></div>
+      <div class="fmedia">
+        <div class="sandra" id="sandra">
+          <img src="assets/sandra/waving.webp" class="on" decoding="async" alt="Sandra, the Nuvel AI stylist" />
+          <img src="assets/sandra/presenting.webp" decoding="async" alt="" />
+          <img src="assets/sandra/thumbsup.webp" decoding="async" alt="" />
+          <span class="tag"><span class="dot"></span>Sandra · online</span>
+        </div>
+      </div>
     </div>
 
     <div class="feature">
@@ -497,6 +525,13 @@
     window.addEventListener('pointermove', function(e){ move(e.clientX); });
     window.addEventListener('pointerup', up);
     if(!rm){ setTimeout(function(){ if(hint && !moved){ hint.classList.add('hide'); } }, 4800); }
+  }
+
+  /* Sandra — cycle expressions so she feels alive */
+  var sandra = document.getElementById('sandra');
+  if(sandra && !rm){
+    var sf = sandra.querySelectorAll('img'), si = 0;
+    setInterval(function(){ sf[si].classList.remove('on'); si = (si+1) % sf.length; sf[si].classList.add('on'); }, 2400);
   }
 })();
 </script>
