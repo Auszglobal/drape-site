@@ -168,6 +168,24 @@
   .badge .soon{margin-left:5px;background:var(--terra);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:.5px;
     text-transform:uppercase;padding:3px 7px;border-radius:999px;align-self:center}
   .band .badge{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14)}
+
+  /* ===== 360° model turntable ===== */
+  .turntable{position:relative;height:440px;aspect-ratio:560/1003;max-width:100%;border-radius:18px;overflow:hidden;
+    background:#ece0ce;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;
+    box-shadow:0 26px 52px -30px rgba(42,38,34,.55)}
+  .turntable.drag{cursor:grabbing}
+  .turntable img{position:absolute;inset:0;width:100%;height:100%;max-height:none;border-radius:0;object-fit:cover;visibility:hidden;
+    pointer-events:none;-webkit-user-drag:none}
+  .turntable img.on{visibility:visible}
+  .tt-badge{position:absolute;top:12px;left:12px;z-index:2;background:rgba(251,246,239,.92);color:var(--ink);
+    font-size:11px;font-weight:700;letter-spacing:.5px;padding:5px 11px;border-radius:999px}
+  .tt-hint{position:absolute;left:50%;bottom:13px;transform:translateX(-50%);z-index:2;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:6px;background:rgba(42,38,34,.62);color:#F4ECE2;
+    font-size:11.5px;font-weight:600;letter-spacing:.3px;padding:6px 13px;border-radius:999px;
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);pointer-events:none;transition:opacity .45s}
+  .tt-hint.hide{opacity:0}
+  .fmedia .turntable{margin:-6px 0}
+  @media(max-width:760px){.turntable{height:400px}}
 </style>
 </head>
 <body>
@@ -252,7 +270,20 @@
           <li>Mix pieces from your wardrobe or from partner retailers</li>
         </ul>
       </div>
-      <div class="fmedia"><img src="assets/drape_todaysoutfit.png" alt="A photoreal outfit rendered on the user's body model" /></div>
+      <div class="fmedia">
+        <div class="turntable" id="turntable" role="img" aria-label="A photoreal body model rotating through a full 360 degrees">
+          <span class="tt-badge">360°</span>
+          <img src="assets/turntable/frame0.webp" class="on" decoding="async" alt="Photoreal body model, front view" />
+          <img src="assets/turntable/frame1.webp" decoding="async" alt="" />
+          <img src="assets/turntable/frame2.webp" decoding="async" alt="" />
+          <img src="assets/turntable/frame3.webp" decoding="async" alt="" />
+          <img src="assets/turntable/frame4.webp" decoding="async" alt="" />
+          <img src="assets/turntable/frame5.webp" decoding="async" alt="" />
+          <img src="assets/turntable/frame6.webp" decoding="async" alt="" />
+          <img src="assets/turntable/frame7.webp" decoding="async" alt="" />
+          <span class="tt-hint" id="ttHint">⟲ Drag to spin</span>
+        </div>
+      </div>
     </div>
 
     <div class="feature rev">
@@ -444,6 +475,28 @@
       phone.style.transform = 'rotateY('+(x*20).toFixed(2)+'deg) rotateX('+(-y*15).toFixed(2)+'deg)';
     });
     hero.addEventListener('mouseleave', function(){ phone.style.transform = ''; });
+  }
+
+  /* 360° turntable — auto-rotate while on screen, drag / swipe to spin */
+  var tt = document.getElementById('turntable');
+  if(tt){
+    var frames = tt.querySelectorAll('img'), n = frames.length, cur = 0;
+    function show(i){ i=((i%n)+n)%n; if(i===cur) return; frames[cur].classList.remove('on'); frames[i].classList.add('on'); cur=i; }
+    var hint = document.getElementById('ttHint');
+    var dragging=false, startX=0, startFrame=0, moved=false, auto=null, inView=false;
+    var SENS = 26; /* px of drag per frame */
+    function startAuto(){ if(rm||auto||dragging||!inView) return; auto=setInterval(function(){ show(cur+1); }, 170); }
+    function stopAuto(){ if(auto){ clearInterval(auto); auto=null; } }
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ es.forEach(function(e){ inView=e.isIntersecting; if(inView){ startAuto(); } else { stopAuto(); } }); }, {threshold:.35}).observe(tt);
+    } else { inView=true; startAuto(); }
+    function down(x){ dragging=true; moved=false; startX=x; startFrame=cur; stopAuto(); tt.classList.add('drag'); }
+    function move(x){ if(!dragging) return; var d=x-startX; if(Math.abs(d)>4){ moved=true; if(hint){ hint.classList.add('hide'); } } show(startFrame - Math.round(d/SENS)); }
+    function up(){ if(!dragging) return; dragging=false; tt.classList.remove('drag'); startAuto(); }
+    tt.addEventListener('pointerdown', function(e){ down(e.clientX); });
+    window.addEventListener('pointermove', function(e){ move(e.clientX); });
+    window.addEventListener('pointerup', up);
+    if(!rm){ setTimeout(function(){ if(hint && !moved){ hint.classList.add('hide'); } }, 4800); }
   }
 })();
 </script>
